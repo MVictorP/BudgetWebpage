@@ -1,0 +1,64 @@
+﻿@model BudgetWebpage.Models.LoginModel
+@{
+    ViewBag.Title = "Login";
+}
+@{
+    Layout = "~/Views/Shared/LoginLayout.cshtml";
+}
+
+@*TODO: Make the date picker show only dates between 11/1/2016 and 1/30/2017*@
+<h2>
+    Login
+</h2>
+@using (Html.BeginForm())
+{
+
+    @Html.ValidationSummary(true)
+
+    <div style="border: solid 1px #ccc; padding: 30px 0 30px 30px; border-radius: 5px;
+        width: 425px; margin: auto; display: table;">
+        <table>
+            <tr>
+                <td valign="top">
+                    @Html.LabelFor(model => model.Username)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Username)
+                    <div style="height: 20px;">
+                        @Html.ValidationMessageFor(model => model.Username)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    @Html.LabelFor(model => model.Password)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Password)
+                    <div style="height: 20px;">
+                        @Html.ValidationMessageFor(model => model.Password)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    @Html.LabelFor(model => model.Test_Date)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Test_Date)
+                    <div style="height: 20px;">
+                        @Html.ValidationMessageFor(model => model.Test_Date)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Login" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+}

@@ -1,0 +1,74 @@
+﻿@model BudgetWebpage.Models.Transaction
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Transaction</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Account_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Account_Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Processing_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Processing_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Transaction_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Transaction_Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Amount)
+        </dt>
+
+        <dd>
+            $@Html.DisplayFor(model => model.Amount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Account.Account_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Account.Account_Type)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Transaction_ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
