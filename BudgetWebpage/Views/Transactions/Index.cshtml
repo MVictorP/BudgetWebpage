@@ -1,0 +1,55 @@
+﻿@model IEnumerable<BudgetWebpage.Models.Transaction>
+
+@{
+    ViewBag.Title = "Transactions";
+}
+
+<h2>Your Transactions</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Account_Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Processing_Date)
+        </th>
+       
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Account_Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Processing_Date)
+        </td>
+       
+        <td>
+            $@Html.DisplayFor(modelItem => item.Amount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Transaction_ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Transaction_ID }) 
+        </td>
+    </tr>
+}
+
+</table>
