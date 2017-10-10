@@ -1,0 +1,98 @@
+﻿@model BudgetWebpage.Models.Goal
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Goal</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Target_Amount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Target_Amount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Start_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Start_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.End_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.End_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Recurring_Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Recurring_Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Interval_Num)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Interval_Num)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Interval_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Interval_Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Account.Account_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Account.Account_Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.First_Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Customer.First_Name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Goal_ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

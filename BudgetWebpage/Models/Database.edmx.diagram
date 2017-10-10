@@ -12,6 +12,9 @@
         <AssociationConnector Association="CapstoneDBModel.FK_Account_Customer" ManuallyRouted="false" />
         <AssociationConnector Association="CapstoneDBModel.FK_Transaction_Account" ManuallyRouted="false" />
         <AssociationConnector Association="CapstoneDBModel.FK_Budget_Customer" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="CapstoneDBModel.Goal" Width="1.5" PointX="5.25" PointY="4.75" />
+        <AssociationConnector Association="CapstoneDBModel.FK_Goal_Account" />
+        <AssociationConnector Association="CapstoneDBModel.FK_Goal_Customer" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

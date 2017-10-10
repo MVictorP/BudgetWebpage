@@ -18,25 +18,8 @@ namespace BudgetWebpage.Models
         {
             int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
             var accounts = db.Accounts.Where(a => a.Customer_ID == activeCustomer);
-            //var accounts = db.Accounts.Include(a => a.Customer);
             return View(accounts.ToList());
         }
-     
-
-        //// GET: Accounts/Details/5
-        //public ActionResult Details(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Account account = db.Accounts.Find(id);
-        //    if (account == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(account);
-        //}
 
         // GET: Accounts/Details/5
         public ActionResult Details(string id)
@@ -46,12 +29,8 @@ namespace BudgetWebpage.Models
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Account account = db.Accounts.Find(id);
-
             Session["Account_Number"] = account.Account_Number;
             return Redirect("/Transactions/Index");
-            //var transactions = db.Transactions.Where(t => t.Account_Number == id);
-            //return View(transactions.ToList());
-
         }      
     }
 }

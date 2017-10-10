@@ -15,28 +15,36 @@ namespace BudgetWebpage.Models
 using System;
     using System.Collections.Generic;
     
-public partial class Transaction
+public partial class Goal
 {
 
-    public int Transaction_ID { get; set; }
+    public int Goal_ID { get; set; }
 
-    public string Account_Type { get; set; }
+    public int Customer_ID { get; set; }
 
     public string Account_Number { get; set; }
 
-    public System.DateTime Processing_Date { get; set; }
-
-    public string Transaction_Type { get; set; }
-
-    public decimal Amount { get; set; }
+    public string Name { get; set; }
 
     public string Description { get; set; }
 
-    public string Category { get; set; }
+    public decimal Target_Amount { get; set; }
+
+    public System.DateTime Start_Date { get; set; }
+
+    public Nullable<System.DateTime> End_Date { get; set; }
+
+    public bool Recurring_Status { get; set; }
+
+    public Nullable<int> Interval_Num { get; set; }
+
+    public string Interval_Type { get; set; }
 
 
 
     public virtual Account Account { get; set; }
+
+    public virtual Customer Customer { get; set; }
 
 }
 

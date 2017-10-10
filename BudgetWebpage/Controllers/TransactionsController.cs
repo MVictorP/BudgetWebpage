@@ -17,10 +17,9 @@ namespace BudgetWebpage.Models
         public ActionResult Index()
         {
             string selectedAccount = Convert.ToString(Session["Account_Number"]);
-            var transactions = db.Transactions.Where(t => t.Account_Number == selectedAccount);
+            DateTime testDate = Convert.ToDateTime(Session["Test_Date"]);
+            var transactions = db.Transactions.Where(t => t.Account_Number == selectedAccount && t.Processing_Date <= testDate);
             return View(transactions.ToList());
-            //var transactions = db.Transactions.Include(t => t.Account);
-            //return View(transactions.ToList());
         }
 
         // GET: Transactions/Details/5
