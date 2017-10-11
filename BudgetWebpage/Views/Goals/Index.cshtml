@@ -1,0 +1,80 @@
+﻿@model IEnumerable<BudgetWebpage.Models.Goal>
+
+@{
+    ViewBag.Title = "Your Goals";
+}
+
+<h2>Your Goals</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Target_Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Start_Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.End_Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Recurring_Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Interval_Num)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Interval_Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Account.Account_Type)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Target_Amount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Start_Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.End_Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Recurring_Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Interval_Num)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Interval_Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Account.Account_Type)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Goal_ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Goal_ID })
+        </td>
+    </tr>
+}
+
+</table>

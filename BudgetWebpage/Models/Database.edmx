@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CapstoneDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CapstoneDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="Account_Number" />
@@ -34,6 +34,22 @@
           <Property Name="Last_Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Goal">
+          <Key>
+            <PropertyRef Name="Goal_ID" />
+          </Key>
+          <Property Name="Goal_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Customer_ID" Type="int" Nullable="false" />
+          <Property Name="Account_Number" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Target_Amount" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="Start_Date" Type="date" Nullable="false" />
+          <Property Name="End_Date" Type="date" />
+          <Property Name="Recurring_Status" Type="bit" Nullable="false" />
+          <Property Name="Interval_Num" Type="int" />
+          <Property Name="Interval_Type" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
@@ -72,6 +88,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Goal_Account">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Goal" Type="Self.Goal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Account_Number" />
+            </Principal>
+            <Dependent Role="Goal">
+              <PropertyRef Name="Account_Number" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Goal_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Goal" Type="Self.Goal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Customer_ID" />
+            </Principal>
+            <Dependent Role="Goal">
+              <PropertyRef Name="Customer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Transaction_Account">
           <End Role="Account" Type="Self.Account" Multiplicity="1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -88,6 +128,7 @@
           <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Budget" EntityType="Self.Budget" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Goal" EntityType="Self.Goal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Account_Customer" Association="Self.FK_Account_Customer">
             <End Role="Customer" EntitySet="Customer" />
@@ -97,13 +138,20 @@
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Budget" EntitySet="Budget" />
           </AssociationSet>
+          <AssociationSet Name="FK_Goal_Account" Association="Self.FK_Goal_Account">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Goal" EntitySet="Goal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Goal_Customer" Association="Self.FK_Goal_Customer">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Goal" EntitySet="Goal" />
+          </AssociationSet>
           <AssociationSet Name="FK_Transaction_Account" Association="Self.FK_Transaction_Account">
             <End Role="Account" EntitySet="Account" />
             <End Role="Transaction" EntitySet="Transaction" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CapstoneDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -116,6 +164,7 @@
           <Property Name="Account_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Customer" Relationship="Self.FK_Account_Customer" FromRole="Account" ToRole="Customer" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Account" FromRole="Account" ToRole="Transaction" />
+          <NavigationProperty Name="Goals" Relationship="CapstoneDBModel.FK_Goal_Account" FromRole="Account" ToRole="Goal" />
         </EntityType>
         <EntityType Name="Budget">
           <Key>
@@ -141,6 +190,7 @@
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Accounts" Relationship="Self.FK_Account_Customer" FromRole="Customer" ToRole="Account" />
           <NavigationProperty Name="Budgets" Relationship="Self.FK_Budget_Customer" FromRole="Customer" ToRole="Budget" />
+          <NavigationProperty Name="Goals" Relationship="CapstoneDBModel.FK_Goal_Customer" FromRole="Customer" ToRole="Goal" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
@@ -209,7 +259,58 @@
             <End Role="Customer" EntitySet="Customers" />
             <End Role="Budget" EntitySet="Budgets" />
           </AssociationSet>
+          <EntitySet Name="Goals" EntityType="CapstoneDBModel.Goal" />
+          <AssociationSet Name="FK_Goal_Account" Association="CapstoneDBModel.FK_Goal_Account">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Goal" EntitySet="Goals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Goal_Customer" Association="CapstoneDBModel.FK_Goal_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Goal" EntitySet="Goals" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Goal">
+          <Key>
+            <PropertyRef Name="Goal_ID" />
+          </Key>
+          <Property Name="Goal_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Customer_ID" Type="Int32" Nullable="false" />
+          <Property Name="Account_Number" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Target_Amount" Type="Decimal" Nullable="false" Precision="18" Scale="4" />
+          <Property Name="Start_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="End_Date" Type="DateTime" Precision="0" />
+          <Property Name="Recurring_Status" Type="Boolean" Nullable="false" />
+          <Property Name="Interval_Num" Type="Int32" />
+          <Property Name="Interval_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Account" Relationship="CapstoneDBModel.FK_Goal_Account" FromRole="Goal" ToRole="Account" />
+          <NavigationProperty Name="Customer" Relationship="CapstoneDBModel.FK_Goal_Customer" FromRole="Goal" ToRole="Customer" />
+        </EntityType>
+        <Association Name="FK_Goal_Account">
+          <End Type="CapstoneDBModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="CapstoneDBModel.Goal" Role="Goal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Account_Number" />
+            </Principal>
+            <Dependent Role="Goal">
+              <PropertyRef Name="Account_Number" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Goal_Customer">
+          <End Type="CapstoneDBModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="CapstoneDBModel.Goal" Role="Goal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Customer_ID" />
+            </Principal>
+            <Dependent Role="Goal">
+              <PropertyRef Name="Customer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -260,6 +361,23 @@
                 <ScalarProperty Name="Amount" ColumnName="Amount" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Category" ColumnName="Category" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Goals">
+            <EntityTypeMapping TypeName="CapstoneDBModel.Goal">
+              <MappingFragment StoreEntitySet="Goal">
+                <ScalarProperty Name="Interval_Type" ColumnName="Interval_Type" />
+                <ScalarProperty Name="Interval_Num" ColumnName="Interval_Num" />
+                <ScalarProperty Name="Recurring_Status" ColumnName="Recurring_Status" />
+                <ScalarProperty Name="End_Date" ColumnName="End_Date" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start_Date" />
+                <ScalarProperty Name="Target_Amount" ColumnName="Target_Amount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Account_Number" ColumnName="Account_Number" />
+                <ScalarProperty Name="Customer_ID" ColumnName="Customer_ID" />
+                <ScalarProperty Name="Goal_ID" ColumnName="Goal_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

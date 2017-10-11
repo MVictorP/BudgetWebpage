@@ -9,7 +9,6 @@ namespace BudgetWebpage.Controllers
 {
     public class HomeController : Controller
     {
-        private CapstoneDBEntities db = new CapstoneDBEntities();
         public ActionResult Index()
         {
             return View();
@@ -35,23 +34,35 @@ namespace BudgetWebpage.Controllers
 
         [HttpPost]
         public ActionResult Login(Models.LoginModel login)
+        //Used this as a guide:
+        //http://www.dotnetlearners.com/blogs/view/124/Login-Page-Example-In-MVC-Using-Entity-Frame-Work.aspx
         {
-
             if (ModelState.IsValid)
             {
-                var user = (from userlist in db.Customers where userlist.Username == login.Username && userlist.Password == login.Password select new { userlist.Customer_ID }).ToList();
-                if (user.FirstOrDefault() != null)
+                CapstoneDBEntities db = new CapstoneDBEntities();
+                try
                 {
-                    Session["Customer_ID"] = user.FirstOrDefault().Customer_ID;
-                    Session["Test_Date"] = login.Test_Date;
-                    return Redirect("/Budgets/Index");
-                }
-                else
-                {
+                    var user = (from userlist in db.Customers where userlist.Username == login.Username && userlist.Password == login.Password select new { userlist.Customer_ID }).ToList();
+                    if (user.FirstOrDefault() != null)
+                    {
+                        Session["Customer_ID"] = user.FirstOrDefault().Customer_ID;
+                        Session["Test_Date"] = login.Test_Date;
+                        return Redirect("/Goals/Dashboard");
+                    }
                     ModelState.AddModelError("", "Invalid Login Credentials");
+                    return View(login);
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError("", e.Message);
+                    return View(login);
                 }
             }
-            return View(login);
+            else
+            {
+                ModelState.AddModelError("", "Invalid Model State");
+                return View(login);
+            }
         }
     }
 }

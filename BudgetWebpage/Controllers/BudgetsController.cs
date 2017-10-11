@@ -17,7 +17,8 @@ namespace BudgetWebpage.Models
         public ActionResult Index()
         {
             int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
-            var budgets = db.Budgets.Where(b => b.Customer_ID == activeCustomer);
+            DateTime testDate = Convert.ToDateTime(Session["Test_Date"]);
+            var budgets = db.Budgets.Where(b => b.Customer_ID == activeCustomer && b.Start_Date <= testDate);
             //var budgets = db.Budgets.Include(b => b.Account).Include(b => b.Customer);
             return View(budgets.ToList());
         }
@@ -45,7 +46,6 @@ namespace BudgetWebpage.Models
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             //ViewBag.Account_Number = new SelectList(db.Accounts, "Account_Number", "Account_Type", budget.Account_Number);
             //ViewBag.Customer_ID = new SelectList(db.Customers, "Customer_ID", "First_Name", budget.Customer_ID);
             return View(budget);
