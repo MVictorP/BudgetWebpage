@@ -26,6 +26,13 @@ namespace BudgetWebpage
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+            
+            // Bundle the chart js stuff
+            
+            bundles.Add(new ScriptBundle("~/bundles/Chart").Include(
+                "~/Scripts/utils.js",
+                "~/Scripts/Chart.js",
+                "~/Scripts/Chart.min.js"));
         }
     }
 }
