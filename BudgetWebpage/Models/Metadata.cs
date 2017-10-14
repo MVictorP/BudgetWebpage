@@ -14,6 +14,12 @@ namespace BudgetWebpage.Models
         public string Account_Type { get; set; }
     }
 
+    public partial class Account
+    {
+        public decimal Account_Total { get; set; }
+    }
+
+
     public class BudgetMetadata
     {
         public int Budget_ID { get; set; }
@@ -51,6 +57,11 @@ namespace BudgetWebpage.Models
         public string Last_Name { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+    }
+
+    public partial class Customer
+    {
+        public string Full_Name { get; set; }
     }
 
     public class GoalMetadata
@@ -91,6 +102,11 @@ namespace BudgetWebpage.Models
         public string Interval_Type { get; set; }
     }
 
+    public partial class Goal
+    {
+
+    }
+
     public class TransactionMetadata
     {
         [Display(Name = "Transaction ID")]
@@ -109,6 +125,11 @@ namespace BudgetWebpage.Models
         public string Description { get; set; }
 
         public string Category { get; set; }
+    }
+
+    public partial class Transaction
+    {
+
     }
 
 }

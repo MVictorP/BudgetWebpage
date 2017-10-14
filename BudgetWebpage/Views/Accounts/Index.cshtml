@@ -12,11 +12,10 @@
             @Html.DisplayNameFor(model => model.Account_Type)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Customer.First_Name)
+            @Html.DisplayNameFor(model => model.Account_Total)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Customer.Last_Name)
-        </th>
+        
+       
         <th></th>
     </tr>
 
@@ -26,12 +25,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Account_Type)
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.First_Name)
+                $@Html.DisplayFor(modelItem => item.Account_Total)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.Last_Name)
-            </td>
+            
             <td>
                 @Html.ActionLink("Details", "Details", new { id = item.Account_Number })
             </td>

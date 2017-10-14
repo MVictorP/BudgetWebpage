@@ -16,8 +16,13 @@ namespace BudgetWebpage.Models
         // GET: Accounts
         public ActionResult Index() //Showing accounts for logged in user
         {
+            DateTime testDate = Convert.ToDateTime(Session["Test_Date"]);
             int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
             var accounts = db.Accounts.Where(a => a.Customer_ID == activeCustomer);
+            foreach (var oParam in accounts)
+            {
+                oParam.Account_Total = db.Transactions.Where(t => t.Account_Number == oParam.Account_Number && t.Processing_Date <= testDate).Sum(item => item.Amount);
+            }
             return View(accounts.ToList());
         }
 

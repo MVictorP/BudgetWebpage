@@ -42,11 +42,14 @@ namespace BudgetWebpage.Controllers
                 CapstoneDBEntities db = new CapstoneDBEntities();
                 try
                 {
-                    var user = (from userlist in db.Customers where userlist.Username == login.Username && userlist.Password == login.Password select new { userlist.Customer_ID }).ToList();
+                    var user = (from userlist in db.Customers where userlist.Username == login.Username && userlist.Password == login.Password
+                                select new { userlist.Customer_ID, userlist.First_Name, userlist.Last_Name }).ToList();
+
                     if (user.FirstOrDefault() != null)
                     {
                         Session["Customer_ID"] = user.FirstOrDefault().Customer_ID;
                         Session["Test_Date"] = login.Test_Date;
+                        Session["Full_Name"] = user.FirstOrDefault().First_Name + " " + user.FirstOrDefault().Last_Name;
                         return Redirect("/Goals/Dashboard");
                     }
                     ModelState.AddModelError("", "Invalid Login Credentials");
