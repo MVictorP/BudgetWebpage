@@ -29,26 +29,26 @@ namespace BudgetWebpage.Views
             return View();
         }
 
-
-        //// GET: Goals/Details/5
-        //public ActionResult Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Goal goal = db.Goals.Find(id);
-        //    if (goal == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(goal);
-        //}
+        // GET: Goals/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Goal goal = db.Goals.Find(id);
+            if (goal == null)
+            {
+                return HttpNotFound();
+            }
+            return View(goal);
+        }
 
         // GET: Goals/Create
         public ActionResult Create()
         {
-            //ViewBag.Account_Number = new SelectList(db.Accounts, "Account_Number", "Account_Type");
+            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
+            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type");
             //ViewBag.Customer_ID = new SelectList(db.Customers, "Customer_ID", "First_Name");
             return View();
         }
@@ -60,16 +60,16 @@ namespace BudgetWebpage.Views
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Goal_ID,Customer_ID,Account_Number,Name,Description,Target_Amount,Start_Date,End_Date,Recurring_Status,Interval_Num,Interval_Type")] Goal goal)
         {
+            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
             if (ModelState.IsValid)
             {
-                int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
                 goal.Customer_ID = activeCustomer;
                 db.Goals.Add(goal);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            //ViewBag.Account_Number = new SelectList(db.Accounts, "Account_Number", "Account_Type", goal.Account_Number);
+            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
             //ViewBag.Customer_ID = new SelectList(db.Customers, "Customer_ID", "First_Name", goal.Customer_ID);
             return View(goal);
         }

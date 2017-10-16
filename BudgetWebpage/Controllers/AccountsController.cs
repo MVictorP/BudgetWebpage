@@ -16,13 +16,27 @@ namespace BudgetWebpage.Models
         // GET: Accounts
         public ActionResult Index() //Showing accounts for logged in user
         {
+            decimal allAccountsSum = 0;
             DateTime testDate = Convert.ToDateTime(Session["Test_Date"]);
             int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
-            var accounts = db.Accounts.Where(a => a.Customer_ID == activeCustomer);
+            var accounts = db.Accounts.Where(a => a.Customer_ID == activeCustomer);           
             foreach (var oParam in accounts)
             {
                 oParam.Account_Total = db.Transactions.Where(t => t.Account_Number == oParam.Account_Number && t.Processing_Date <= testDate).Sum(item => item.Amount);
+                if (oParam.Account_Type == "Checking")
+                {
+                    allAccountsSum += oParam.Account_Total;
+                }
+                if (oParam.Account_Type == "Savings")
+                {
+                    allAccountsSum += oParam.Account_Total;
+                }
+                if (oParam.Account_Type == "Credit Card")
+                {
+                    allAccountsSum -= oParam.Account_Total; //credit is debt so subtract from overall total
+                }
             }
+            Session["Customer_Balance"] = Math.Round(allAccountsSum, 2);  
             return View(accounts.ToList());
         }
 

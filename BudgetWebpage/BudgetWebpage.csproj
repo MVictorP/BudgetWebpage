@@ -264,12 +264,12 @@
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Shared\LoginLayout.cshtml" />
+    <Content Include="Views\Goals\Dashboard.cshtml" />
     <Content Include="Views\Goals\Create.cshtml" />
     <Content Include="Views\Goals\Delete.cshtml" />
     <Content Include="Views\Goals\Details.cshtml" />
     <Content Include="Views\Goals\Edit.cshtml" />
     <Content Include="Views\Goals\Index.cshtml" />
-    <Content Include="Views\Goals\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

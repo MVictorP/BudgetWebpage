@@ -12,13 +12,15 @@ namespace BudgetWebpage.Models
         public int Customer_ID { get; set; }
         [Display(Name = "Account Type")]
         public string Account_Type { get; set; }
+        [Display(Name = "Balance")]
+        public string Account_Total { get; set; }
+
     }
 
     public partial class Account
     {
         public decimal Account_Total { get; set; }
     }
-
 
     public class BudgetMetadata
     {
@@ -61,7 +63,7 @@ namespace BudgetWebpage.Models
 
     public partial class Customer
     {
-        public string Full_Name { get; set; }
+
     }
 
     public class GoalMetadata
@@ -100,6 +102,7 @@ namespace BudgetWebpage.Models
 
         [Display(Name = "Months or Weeks")]
         public string Interval_Type { get; set; }
+
     }
 
     public partial class Goal
@@ -121,7 +124,6 @@ namespace BudgetWebpage.Models
         [Display(Name = "Transaction Type")]
         public string Transaction_Type { get; set; }
         public decimal Amount { get; set; }
-
         public string Description { get; set; }
 
         public string Category { get; set; }

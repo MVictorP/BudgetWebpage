@@ -5,7 +5,7 @@
 }
 
 <h2>Your Accounts</h2>
-
+<h4>Overall Balance: $@HttpContext.Current.Session["Customer_Balance"].ToString()</h4>
 <table class="table">
     <tr>
         <th>
@@ -14,8 +14,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Account_Total)
         </th>
-        
-       
+
         <th></th>
     </tr>
 
@@ -29,7 +28,7 @@
             <td>
                 $@Html.DisplayFor(modelItem => item.Account_Total)
             </td>
-            
+      
             <td>
                 @Html.ActionLink("Details", "Details", new { id = item.Account_Number })
             </td>

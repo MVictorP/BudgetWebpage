@@ -38,6 +38,9 @@
         <th>
             @Html.DisplayNameFor(model => model.Account.Account_Type)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Customer.First_Name)
+        </th>
         <th></th>
     </tr>
 
@@ -71,7 +74,11 @@
             @Html.DisplayFor(modelItem => item.Account.Account_Type)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.Customer.First_Name)
+        </td>
+        <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Goal_ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Goal_ID }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.Goal_ID })
         </td>
     </tr>
