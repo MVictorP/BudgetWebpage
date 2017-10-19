@@ -24,10 +24,7 @@ namespace BudgetWebpage.Models
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Please enter a Date.")]
-        [DataType(DataType.Date)]
         [Display(Name = "Enter a Date")]
-        [Range(typeof(DateTime), "11/01/2016", "1/30/2017",
-            ErrorMessage = "Date must be between {1:MM/dd/yy} and {2:MM/dd/yy}")]
         public DateTime Test_Date { get; set; }
     }
 
