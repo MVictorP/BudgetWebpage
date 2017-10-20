@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - Budget Webpage</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
 </head>
 
 
@@ -27,7 +28,8 @@
                     <li>@Html.ActionLink("Account History", "Index", "Accounts")</li>
                     <li>@Html.ActionLink("Goal Management", "Index", "Goals")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>            
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Logout", "Login", "Home")</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" style="font-size:13pt; color:darkgray; margin-top:0.7em;">
                     <text>@HttpContext.Current.Session["Full_Name"].ToString()</text>
@@ -43,8 +45,8 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 </html>
+

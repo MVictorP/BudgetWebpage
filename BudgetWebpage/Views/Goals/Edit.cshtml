@@ -18,15 +18,7 @@
         @Html.HiddenFor(model => model.Goal_ID)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Customer_ID, "Customer_ID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("Customer_ID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Customer_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Account_Number, "Account_Number", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Account_Number, "Your Accounts", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("Account_Number", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Account_Number, "", new { @class = "text-danger" })
@@ -83,18 +75,18 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="showHideIntervalNum">
             @Html.LabelFor(model => model.Interval_Num, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Interval_Num, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownList("Interval_Num", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Interval_Num, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="showHideIntervalType">
             @Html.LabelFor(model => model.Interval_Type, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Interval_Type, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownList("Interval_Type", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Interval_Type, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -114,3 +106,39 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<div id="testDate" data-value="@HttpContext.Current.Session["Test_Date"].ToString()"></div>
+<div id="startDate" data-value="@HttpContext.Current.Session["Start_Date"].ToString()"></div>
+<script type="text/javascript">
+    var test_date = $("#testDate").data('value');
+    var start_date = $("#startDate").data('value');
+    $(function () {
+        $('#Start_Date').datetimepicker({
+            format: "MM/DD/YYYY",
+            minDate: moment(test_date),
+            defaultDate: moment(start_date),
+        }).on('dp.change', function (e) {
+            $(this).data('DateTimePicker').hide();
+        });
+    });
+    $(function () {
+        $('#End_Date').datetimepicker({
+            format: "MM/DD/YYYY",
+            minDate: moment(test_date),
+        }).on('dp.change', function (e) {
+            $(this).data('DateTimePicker').hide();
+        });
+    });
+    $(function () {
+        $('#Recurring_Status').change(function () {
+            if (this.checked)
+            {
+                $('#showHideIntervalNum').show();
+                $('#showHideIntervalType').show();
+            }
+            else {
+                $('#showHideIntervalNum').hide();
+                $('#showHideIntervalType').hide();
+            }
+        });
+    });
+</script>

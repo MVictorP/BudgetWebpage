@@ -39,7 +39,7 @@
             @Html.DisplayNameFor(model => model.Account.Account_Type)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Customer.First_Name)
+            @Html.DisplayNameFor(model => model.Status)
         </th>
         <th></th>
     </tr>
@@ -53,7 +53,7 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Target_Amount)
+            $@Html.DisplayFor(modelItem => item.Target_Amount)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Start_Date)
@@ -74,11 +74,14 @@
             @Html.DisplayFor(modelItem => item.Account.Account_Type)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Customer.First_Name)
+            @Html.DisplayFor(modelItem => item.Status)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Goal_ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Goal_ID }) |
+            @if (item.Status != "Expired")
+            { 
+                @Html.ActionLink("Edit", "Edit", new { id = item.Goal_ID })
+            } 
+            @Html.ActionLink("Details", "Details", new { id=item.Goal_ID })
             @Html.ActionLink("Delete", "Delete", new { id=item.Goal_ID })
         </td>
     </tr>

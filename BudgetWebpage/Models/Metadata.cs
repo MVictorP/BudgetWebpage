@@ -72,6 +72,7 @@ namespace BudgetWebpage.Models
 
         public int Customer_ID { get; set; }
 
+        [Required(ErrorMessage = "Please select an account.")]
         public string Account_Number { get; set; }
 
         [Required(ErrorMessage = "Please enter a name.")]
@@ -81,17 +82,17 @@ namespace BudgetWebpage.Models
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Please enter an amount.")]
-        [Display(Name = "Target Amount")]
+        [Display(Name = "Goal Amount")]
         public decimal Target_Amount { get; set; }
 
         [Required(ErrorMessage = "Please enter a start date.")]
         [Display(Name = "Start Date")]
-        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MMM-dd-yyyy}")]
         public System.DateTime Start_Date { get; set; }
 
-        [Required(ErrorMessage = "Please enter an end date.")]
+        //[Required(ErrorMessage = "Please enter an end date.")]
         [Display(Name = "End Date")]
-        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MMM-dd-yyyy}")]
         public Nullable<System.DateTime> End_Date { get; set; }
 
         [Display(Name = "Set to Repeat")]
@@ -107,7 +108,7 @@ namespace BudgetWebpage.Models
 
     public partial class Goal
     {
-
+        public string Status { get; set; }
     }
 
     public class TransactionMetadata

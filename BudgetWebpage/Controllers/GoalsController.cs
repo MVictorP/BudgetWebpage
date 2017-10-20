@@ -19,7 +19,31 @@ namespace BudgetWebpage.Views
         {
             int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
             DateTime testDate = Convert.ToDateTime(Session["Test_Date"]);
-            var goals = db.Goals.Where(g => g.Customer_ID == activeCustomer && g.Start_Date <= testDate);
+            var goals = db.Goals.Where(g => g.Customer_ID == activeCustomer);
+            foreach (var oParam in goals)
+            {
+                if (oParam.Start_Date < testDate && oParam.End_Date > testDate)
+                {
+                    oParam.Status = "Active";
+                }
+                if (oParam.Start_Date > testDate)
+                {
+                    oParam.Status = "Upcoming";
+                }
+                if (oParam.End_Date != null && oParam.End_Date < testDate)
+                {
+                    oParam.Status = "Expired";
+                }
+                if (oParam.Start_Date < testDate && oParam.End_Date == testDate)
+                {
+                    oParam.Status = "Ending Today";
+                }
+                if (oParam.Start_Date == testDate )
+                {
+                    oParam.Status = "Created Today";
+                }
+
+            }
             //var goals = db.Goals.Include(g => g.Account).Include(g => g.Customer);
             return View(goals.ToList());
         }
@@ -48,8 +72,13 @@ namespace BudgetWebpage.Views
         public ActionResult Create()
         {
             int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
+            var selectedInterval = new List<string> { "Months", "Weeks" };
+            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
             ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type");
-            //ViewBag.Customer_ID = new SelectList(db.Customers, "Customer_ID", "First_Name");
+            ViewBag.Interval_Type = new SelectList(selectedInterval);
+            ViewBag.Interval_Num = new SelectList(intervalNumRange);
+
             return View();
         }
 
@@ -61,8 +90,27 @@ namespace BudgetWebpage.Views
         public ActionResult Create([Bind(Include = "Goal_ID,Customer_ID,Account_Number,Name,Description,Target_Amount,Start_Date,End_Date,Recurring_Status,Interval_Num,Interval_Type")] Goal goal)
         {
             int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
+            var selectedInterval = new List<string> { "Months", "Weeks" };
+            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+            if (goal.Start_Date >= goal.End_Date)
+            {
+                ModelState.AddModelError("End_Date", "End Date must after the Start Date");
+
+                ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
+                ViewBag.Interval_Type = new SelectList(selectedInterval);
+                ViewBag.Interval_Num = new SelectList(intervalNumRange);
+
+                return View(goal);
+            }
+
             if (ModelState.IsValid)
             {
+                if (goal.Recurring_Status == false)
+                {
+                    goal.Interval_Num = null;
+                    goal.Interval_Type = null;
+                }
                 goal.Customer_ID = activeCustomer;
                 db.Goals.Add(goal);
                 db.SaveChanges();
@@ -70,24 +118,31 @@ namespace BudgetWebpage.Views
             }
 
             ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
-            //ViewBag.Customer_ID = new SelectList(db.Customers, "Customer_ID", "First_Name", goal.Customer_ID);
+            ViewBag.Interval_Type = new SelectList(selectedInterval);
+            ViewBag.Interval_Num = new SelectList(intervalNumRange);
+
             return View(goal);
         }
 
         // GET: Goals/Edit/5
         public ActionResult Edit(int? id)
         {
+            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
+            var selectedInterval = new List<string> { "Months", "Weeks" };
+            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Goal goal = db.Goals.Find(id);
+            Session["Start_Date"] = goal.Start_Date;
             if (goal == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Account_Number = new SelectList(db.Accounts, "Account_Number", "Account_Type", goal.Account_Number);
-            ViewBag.Customer_ID = new SelectList(db.Customers, "Customer_ID", "First_Name", goal.Customer_ID);
+            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
+            ViewBag.Interval_Type = new SelectList(selectedInterval, goal.Interval_Type);
+            ViewBag.Interval_Num = new SelectList(intervalNumRange, goal.Interval_Num);
             return View(goal);
         }
 
@@ -98,14 +153,37 @@ namespace BudgetWebpage.Views
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Goal_ID,Customer_ID,Account_Number,Name,Description,Target_Amount,Start_Date,End_Date,Recurring_Status,Interval_Num,Interval_Type")] Goal goal)
         {
+            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
+            var selectedInterval = new List<string> { "Months", "Weeks" };
+            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+            if (goal.Start_Date >= goal.End_Date)
+            {
+                ModelState.AddModelError("End_Date", "End Date must after the Start Date");
+
+                ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
+                ViewBag.Interval_Type = new SelectList(selectedInterval);
+                ViewBag.Interval_Num = new SelectList(intervalNumRange);
+
+                return View(goal);
+            }
+
             if (ModelState.IsValid)
             {
+                if (goal.Recurring_Status == false)
+                {
+                    goal.Interval_Num = null;
+                    goal.Interval_Type = null;
+                }
+                goal.Customer_ID = activeCustomer;
                 db.Entry(goal).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.Account_Number = new SelectList(db.Accounts, "Account_Number", "Account_Type", goal.Account_Number);
-            ViewBag.Customer_ID = new SelectList(db.Customers, "Customer_ID", "First_Name", goal.Customer_ID);
+
+            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
+            ViewBag.Interval_Type = new SelectList(selectedInterval);
+            ViewBag.Interval_Num = new SelectList(intervalNumRange);
             return View(goal);
         }
 
