@@ -107,23 +107,23 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <div id="testDate" data-value="@HttpContext.Current.Session["Test_Date"].ToString()"></div>
-<div id="startDate" data-value="@HttpContext.Current.Session["Start_Date"].ToString()"></div>
+@*<div id="startDate" data-value="@HttpContext.Current.Session["Start_Date"].ToString()"></div>*@
 <script type="text/javascript">
     var test_date = $("#testDate").data('value');
-    var start_date = $("#startDate").data('value');
+    //var start_date = $("#startDate").data('value');
     $(function () {
         $('#Start_Date').datetimepicker({
-            format: "MM/DD/YYYY",
+            //defaultDate: moment(start_date),
             minDate: moment(test_date),
-            defaultDate: moment(start_date),
+            format: 'MM/DD/YYYY',
         }).on('dp.change', function (e) {
             $(this).data('DateTimePicker').hide();
         });
     });
     $(function () {
         $('#End_Date').datetimepicker({
-            format: "MM/DD/YYYY",
             minDate: moment(test_date),
+            format: 'MM/DD/YYYY',
         }).on('dp.change', function (e) {
             $(this).data('DateTimePicker').hide();
         });
@@ -142,3 +142,4 @@
         });
     });
 </script>
+

@@ -8,43 +8,82 @@ using System.Web;
 using System.Web.Mvc;
 using BudgetWebpage.Models;
 
+
 namespace BudgetWebpage.Views
 {
     public class GoalsController : Controller
     {
         private CapstoneDBEntities db = new CapstoneDBEntities();
+        private List<int> intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        private List<string> intervalType = new List<string> { "Months", "Weeks" };
+        private DateTime testDate = Convert.ToDateTime(System.Web.HttpContext.Current.Session["Test_Date"]);
+        private int activeCustomer = Convert.ToInt32(System.Web.HttpContext.Current.Session["Customer_ID"]);
 
         // GET: Goals
         public ActionResult Index()
         {
-            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
-            DateTime testDate = Convert.ToDateTime(Session["Test_Date"]);
             var goals = db.Goals.Where(g => g.Customer_ID == activeCustomer);
-            foreach (var oParam in goals)
+            foreach (var goal in goals)
             {
-                if (oParam.Start_Date < testDate && oParam.End_Date > testDate)
+                if (goal.Start_Date < testDate && testDate < goal.End_Date)
                 {
-                    oParam.Status = "Active";
+                    goal.Status = "Active";
                 }
-                if (oParam.Start_Date > testDate)
+                if (goal.Start_Date < testDate && goal.End_Date == null)
                 {
-                    oParam.Status = "Upcoming";
+                    goal.Status = "Active";
                 }
-                if (oParam.End_Date != null && oParam.End_Date < testDate)
+                if (testDate < goal.Start_Date)
                 {
-                    oParam.Status = "Expired";
+                    goal.Status = "Upcoming";
                 }
-                if (oParam.Start_Date < testDate && oParam.End_Date == testDate)
+                if (goal.End_Date < testDate)
                 {
-                    oParam.Status = "Ending Today";
+                    goal.Status = "Expired";
                 }
-                if (oParam.Start_Date == testDate )
+                if (goal.End_Date == testDate)
                 {
-                    oParam.Status = "Created Today";
+                    goal.Status = "Ending Today";
+                }
+                if (goal.Start_Date == testDate)
+                {
+                    goal.Status = "Created Today";
+                }
+
+                if (goal.Recurring_Status == true)
+                {
+                    int intervalAmount = Convert.ToInt32(goal.Interval_Num);
+                    if (goal.Interval_Type == "Weeks")
+                    {
+                        goal.Interval_Period_End_Date = goal.Start_Date.AddDays(intervalAmount * 7);
+                        DateTime thisDate = goal.Start_Date.AddDays(intervalAmount * 7);
+                        while (thisDate < testDate)
+                        {
+                            thisDate = thisDate.AddDays(intervalAmount * 7);
+                            goal.Interval_Period_End_Date = thisDate;
+                        }
+                    }
+                    if (goal.Interval_Type == "Months")
+                    {
+                        goal.Interval_Period_End_Date = goal.Start_Date.AddMonths(intervalAmount);
+                        DateTime thisDate = goal.Start_Date.AddMonths(intervalAmount);
+                        while (thisDate < testDate)
+                        {
+                            thisDate = thisDate.AddMonths(intervalAmount);
+                            goal.Interval_Period_End_Date = thisDate;
+                        }
+                    }
+                    if (goal.Interval_Period_End_Date > goal.End_Date)
+                    {
+                        goal.Interval_Period_End_Date = null;
+                    }
+                }
+                else
+                {
+                    goal.Interval_Period_End_Date = null;
                 }
 
             }
-            //var goals = db.Goals.Include(g => g.Account).Include(g => g.Customer);
             return View(goals.ToList());
         }
 
@@ -70,13 +109,9 @@ namespace BudgetWebpage.Views
 
         // GET: Goals/Create
         public ActionResult Create()
-        {
-            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
-            var selectedInterval = new List<string> { "Months", "Weeks" };
-            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-
+        {           
             ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type");
-            ViewBag.Interval_Type = new SelectList(selectedInterval);
+            ViewBag.Interval_Type = new SelectList(intervalType);
             ViewBag.Interval_Num = new SelectList(intervalNumRange);
 
             return View();
@@ -89,21 +124,31 @@ namespace BudgetWebpage.Views
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Goal_ID,Customer_ID,Account_Number,Name,Description,Target_Amount,Start_Date,End_Date,Recurring_Status,Interval_Num,Interval_Type")] Goal goal)
         {
-            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
-            var selectedInterval = new List<string> { "Months", "Weeks" };
-            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-
             if (goal.Start_Date >= goal.End_Date)
             {
                 ModelState.AddModelError("End_Date", "End Date must after the Start Date");
 
-                ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
-                ViewBag.Interval_Type = new SelectList(selectedInterval);
-                ViewBag.Interval_Num = new SelectList(intervalNumRange);
-
+                CommonViewbag(goal);
                 return View(goal);
             }
-
+            if (goal.Recurring_Status == true)
+            {
+                int interval = Convert.ToInt32(goal.Interval_Num);
+                if (goal.Interval_Type == "Weeks")
+                {
+                    goal.Interval_Period_End_Date = goal.Start_Date.AddDays(interval * 7);
+                }
+                if (goal.Interval_Type == "Months")
+                {
+                    goal.Interval_Period_End_Date = goal.Start_Date.AddMonths(interval);
+                }
+            }
+            if (goal.End_Date < goal.Interval_Period_End_Date)
+            {
+                ModelState.AddModelError("End_Date", "The End Date must be after the first reoccurance");
+                CommonViewbag(goal);
+                return View(goal);
+            }
             if (ModelState.IsValid)
             {
                 if (goal.Recurring_Status == false)
@@ -117,32 +162,26 @@ namespace BudgetWebpage.Views
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
-            ViewBag.Interval_Type = new SelectList(selectedInterval);
-            ViewBag.Interval_Num = new SelectList(intervalNumRange);
-
+            CommonViewbag(goal);
             return View(goal);
         }
 
         // GET: Goals/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id )
         {
-            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
-            var selectedInterval = new List<string> { "Months", "Weeks" };
-            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Goal goal = db.Goals.Find(id);
-            Session["Start_Date"] = goal.Start_Date;
+
+           
             if (goal == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
-            ViewBag.Interval_Type = new SelectList(selectedInterval, goal.Interval_Type);
-            ViewBag.Interval_Num = new SelectList(intervalNumRange, goal.Interval_Num);
+            //Session["Start_Date"] = goal.Start_Date;
+            CommonViewbag(goal);
             return View(goal);
         }
 
@@ -153,18 +192,28 @@ namespace BudgetWebpage.Views
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Goal_ID,Customer_ID,Account_Number,Name,Description,Target_Amount,Start_Date,End_Date,Recurring_Status,Interval_Num,Interval_Type")] Goal goal)
         {
-            int activeCustomer = Convert.ToInt32(Session["Customer_ID"]);
-            var selectedInterval = new List<string> { "Months", "Weeks" };
-            var intervalNumRange = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-
             if (goal.Start_Date >= goal.End_Date)
             {
                 ModelState.AddModelError("End_Date", "End Date must after the Start Date");
-
-                ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
-                ViewBag.Interval_Type = new SelectList(selectedInterval);
-                ViewBag.Interval_Num = new SelectList(intervalNumRange);
-
+                CommonViewbag(goal);      
+                return View(goal);
+            }
+            if (goal.Recurring_Status == true)
+            {
+                int interval = Convert.ToInt32(goal.Interval_Num);
+                if (goal.Interval_Type == "Weeks")
+                {
+                    goal.Interval_Period_End_Date = goal.Start_Date.AddDays(interval * 7);
+                }
+                if (goal.Interval_Type == "Months")
+                {
+                    goal.Interval_Period_End_Date = goal.Start_Date.AddMonths(interval);
+                }
+            }
+            if (goal.End_Date < goal.Interval_Period_End_Date)
+            {
+                ModelState.AddModelError("End_Date", "The End Date must be after the first reoccurance");
+                CommonViewbag(goal);
                 return View(goal);
             }
 
@@ -180,10 +229,7 @@ namespace BudgetWebpage.Views
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
-            ViewBag.Interval_Type = new SelectList(selectedInterval);
-            ViewBag.Interval_Num = new SelectList(intervalNumRange);
+            CommonViewbag(goal);
             return View(goal);
         }
 
@@ -220,6 +266,14 @@ namespace BudgetWebpage.Views
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        //occurs in multiple views
+        private void CommonViewbag(Goal goal)
+        {
+            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
+            ViewBag.Interval_Type = new SelectList(intervalType);
+            ViewBag.Interval_Num = new SelectList(intervalNumRange);
         }
     }
 }

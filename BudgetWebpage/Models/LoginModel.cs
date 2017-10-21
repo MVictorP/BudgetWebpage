@@ -26,12 +26,6 @@ namespace BudgetWebpage.Models
         [Required(ErrorMessage = "Please enter a Date.")]
         [Display(Name = "Enter a Date")]
         public DateTime Test_Date { get; set; }
-    }
 
-    public class User
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public DateTime Test_Date { get; set; }
     }
 }

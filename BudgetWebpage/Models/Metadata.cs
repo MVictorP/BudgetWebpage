@@ -12,13 +12,11 @@ namespace BudgetWebpage.Models
         public int Customer_ID { get; set; }
         [Display(Name = "Account Type")]
         public string Account_Type { get; set; }
-        [Display(Name = "Balance")]
-        public string Account_Total { get; set; }
-
     }
 
     public partial class Account
     {
+        [Display(Name = "Balance")]
         public decimal Account_Total { get; set; }
     }
 
@@ -90,7 +88,6 @@ namespace BudgetWebpage.Models
         [DisplayFormat(DataFormatString = "{0:MMM-dd-yyyy}")]
         public System.DateTime Start_Date { get; set; }
 
-        //[Required(ErrorMessage = "Please enter an end date.")]
         [Display(Name = "End Date")]
         [DisplayFormat(DataFormatString = "{0:MMM-dd-yyyy}")]
         public Nullable<System.DateTime> End_Date { get; set; }
@@ -108,7 +105,15 @@ namespace BudgetWebpage.Models
 
     public partial class Goal
     {
-        public string Status { get; set; }
+        public string Status { get; set; } //will hold the current status of the goal based on the test date (aka todays date)
+
+
+        //will hold the date for the next interval. Ex. Start date = jan/01/2017 and the interval is 2 weeks, 
+        //this will hold jan/14/2017 then on jan/14/2017 it will hold jan/28/2017
+        [Display(Name = "Next Occurrence")]
+        [DisplayFormat(DataFormatString = "{0:MMM-dd-yyyy}")]
+        public Nullable<System.DateTime> Interval_Period_End_Date { get; set; }
+
     }
 
     public class TransactionMetadata
