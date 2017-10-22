@@ -115,7 +115,7 @@ namespace BudgetWebpage.Models
 
         [Display(Name = "Amount Left")]
         public decimal Amount_Left { get; set; }
-        [Display(Name = "Previous Period Status")]
+        [Display(Name = "Goal Interval Status")]
         public string Goal_Achieved { get; set; }
 
     }
