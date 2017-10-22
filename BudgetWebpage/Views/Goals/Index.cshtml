@@ -27,13 +27,7 @@
             @Html.DisplayNameFor(model => model.End_Date)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Recurring_Status)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.Interval_Num)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Interval_Type)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Account.Account_Type)
@@ -43,6 +37,12 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Interval_Period_End_Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount_Left)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Goal_Achieved)
         </th>
         <th></th>
     </tr>
@@ -65,13 +65,7 @@
             @Html.DisplayFor(modelItem => item.End_Date)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Recurring_Status)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Interval_Num)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Interval_Type)
+            @Html.DisplayFor(modelItem => item.Interval_Num) @Html.DisplayFor(modelItem => item.Interval_Type)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Account.Account_Type)
@@ -81,6 +75,12 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Interval_Period_End_Date)
+        </td>
+        <td>
+            $@Html.DisplayFor(modelItem => item.Amount_Left)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Goal_Achieved)
         </td>
         <td>
             @if (item.Status != "Expired")

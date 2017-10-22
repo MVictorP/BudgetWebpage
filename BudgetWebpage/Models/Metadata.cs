@@ -107,12 +107,16 @@ namespace BudgetWebpage.Models
     {
         public string Status { get; set; } //will hold the current status of the goal based on the test date (aka todays date)
 
-
         //will hold the date for the next interval. Ex. Start date = jan/01/2017 and the interval is 2 weeks, 
         //this will hold jan/14/2017 then on jan/14/2017 it will hold jan/28/2017
         [Display(Name = "Next Occurrence")]
         [DisplayFormat(DataFormatString = "{0:MMM-dd-yyyy}")]
         public Nullable<System.DateTime> Interval_Period_End_Date { get; set; }
+
+        [Display(Name = "Amount Left")]
+        public decimal Amount_Left { get; set; }
+        [Display(Name = "Previous Period Status")]
+        public string Goal_Achieved { get; set; }
 
     }
 

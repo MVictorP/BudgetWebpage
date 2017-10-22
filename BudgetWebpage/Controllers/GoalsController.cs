@@ -23,6 +23,7 @@ namespace BudgetWebpage.Views
         public ActionResult Index()
         {
             var goals = db.Goals.Where(g => g.Customer_ID == activeCustomer);
+            
             foreach (var goal in goals)
             {
                 if (goal.Start_Date < testDate && testDate < goal.End_Date)
@@ -35,7 +36,7 @@ namespace BudgetWebpage.Views
                 }
                 if (testDate < goal.Start_Date)
                 {
-                    goal.Status = "Viewable for testing";
+                    goal.Status = "Future Test Goal";
                 }
                 if (goal.End_Date < testDate)
                 {
@@ -49,7 +50,7 @@ namespace BudgetWebpage.Views
                 {
                     goal.Status = "Created Today";
                 }
-
+                decimal accountTotal = db.Transactions.Where(t => t.Account_Number == goal.Account_Number && t.Processing_Date <= testDate).Sum(item => item.Amount);
                 if (goal.Recurring_Status == true)
                 {
                     int intervalAmount = Convert.ToInt32(goal.Interval_Num);
@@ -60,7 +61,25 @@ namespace BudgetWebpage.Views
                         while (thisDate < testDate)
                         {
                             thisDate = thisDate.AddDays(intervalAmount * 7);
+                            
                             goal.Interval_Period_End_Date = thisDate;
+                        }
+                        decimal accountTotalAtThisDate = db.Transactions.Where(t => t.Account_Number == goal.Account_Number && t.Processing_Date <= thisDate).Sum(item => item.Amount);
+                        decimal goalMet = accountTotalAtThisDate - goal.Target_Amount;
+
+                        DateTime prevDate = thisDate.AddDays(intervalAmount * -7);
+                        if (goalMet <= 0)
+                        {
+                            goal.Goal_Achieved = "Failed Previous";
+                        }
+                        else
+                        {
+                            goal.Goal_Achieved = "Met Previous";
+                        }
+                        if (prevDate == goal.Start_Date)
+                        {
+                            goal.Goal_Achieved = "In Progress";
+
                         }
                     }
                     if (goal.Interval_Type == "Months")
@@ -72,6 +91,23 @@ namespace BudgetWebpage.Views
                             thisDate = thisDate.AddMonths(intervalAmount);
                             goal.Interval_Period_End_Date = thisDate;
                         }
+                        decimal accountTotalAtThisDate = db.Transactions.Where(t => t.Account_Number == goal.Account_Number && t.Processing_Date <= thisDate).Sum(item => item.Amount);
+                        decimal goalMet = accountTotalAtThisDate - goal.Target_Amount;
+
+                        DateTime prevDate = thisDate.AddMonths(-intervalAmount);
+                        if (goalMet <= 0)
+                        {
+                            goal.Goal_Achieved = "Failed Previous";
+                        }
+                        else
+                        {
+                            goal.Goal_Achieved = "Met Previous";
+                        }
+                        if (prevDate == goal.Start_Date)
+                        {
+                            goal.Goal_Achieved = "In Progress";
+
+                        }
                     }
                     if (goal.Interval_Period_End_Date > goal.End_Date)
                     {
@@ -81,9 +117,25 @@ namespace BudgetWebpage.Views
                 else
                 {
                     goal.Interval_Period_End_Date = null;
+                }               
+                goal.Amount_Left = accountTotal - goal.Target_Amount;
+                if (goal.Status == "Expired" && goal.Interval_Num == null && goal.Interval_Type == null)
+                {
+                    if (goal.Amount_Left <= 0)
+                    {
+                        goal.Goal_Achieved = "Failed Goal";
+                    }
+                    else
+                    {
+                        goal.Goal_Achieved = "Met Goal";
+                    }
                 }
-
+                if (goal.Status == "Active" && goal.Interval_Num == null && goal.Interval_Type == null)
+                {
+                    goal.Goal_Achieved = "In Progress";
+                }
             }
+            
             return View(goals.ToList());
         }
 
