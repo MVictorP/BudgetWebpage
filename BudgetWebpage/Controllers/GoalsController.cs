@@ -35,7 +35,7 @@ namespace BudgetWebpage.Views
                 }
                 if (testDate < goal.Start_Date)
                 {
-                    goal.Status = "Upcoming";
+                    goal.Status = "Viewable for testing";
                 }
                 if (goal.End_Date < testDate)
                 {
@@ -156,6 +156,7 @@ namespace BudgetWebpage.Views
                     goal.Interval_Num = null;
                     goal.Interval_Type = null;
                 }
+                goal.Start_Date = testDate;
                 goal.Customer_ID = activeCustomer;
                 db.Goals.Add(goal);
                 db.SaveChanges();
@@ -180,8 +181,10 @@ namespace BudgetWebpage.Views
             {
                 return HttpNotFound();
             }
-            //Session["Start_Date"] = goal.Start_Date;
-            CommonViewbag(goal);
+            Session["Start_Date"] = goal.Start_Date;
+            ViewBag.Account_Number = new SelectList(db.Accounts.Where(a => a.Customer_ID == activeCustomer), "Account_Number", "Account_Type", goal.Account_Number);
+            ViewBag.Interval_Type = new SelectList(intervalType, goal.Interval_Type);
+            ViewBag.Interval_Num = new SelectList(intervalNumRange, goal.Interval_Num);
             return View(goal);
         }
 
@@ -192,6 +195,8 @@ namespace BudgetWebpage.Views
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Goal_ID,Customer_ID,Account_Number,Name,Description,Target_Amount,Start_Date,End_Date,Recurring_Status,Interval_Num,Interval_Type")] Goal goal)
         {
+            DateTime thisDate = Convert.ToDateTime(System.Web.HttpContext.Current.Session["Start_Date"]);
+            goal.Start_Date = thisDate;
             if (goal.Start_Date >= goal.End_Date)
             {
                 ModelState.AddModelError("End_Date", "End Date must after the Start Date");

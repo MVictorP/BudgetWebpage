@@ -10,9 +10,9 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>Goal</h4>
+        <h3>Started On: @Html.DisplayFor(model => model.Start_Date)</h3>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Goal_ID)
@@ -33,6 +33,7 @@
             </div>
         </div>
 
+
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -46,14 +47,6 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Target_Amount, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Target_Amount, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Start_Date, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Start_Date, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Start_Date, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -107,31 +100,19 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <div id="testDate" data-value="@HttpContext.Current.Session["Test_Date"].ToString()"></div>
-@*<div id="startDate" data-value="@HttpContext.Current.Session["Start_Date"].ToString()"></div>*@
 <script type="text/javascript">
     var test_date = $("#testDate").data('value');
-    //var start_date = $("#startDate").data('value');
-    $(function () {
-        $('#Start_Date').datetimepicker({
-            //defaultDate: moment(start_date),
-            minDate: moment(test_date),
-            format: 'MM/DD/YYYY',
-        }).on('dp.change', function (e) {
-            $(this).data('DateTimePicker').hide();
-        });
-    });
     $(function () {
         $('#End_Date').datetimepicker({
-            minDate: moment(test_date),
             format: 'MM/DD/YYYY',
+            minDate: moment(test_date),
         }).on('dp.change', function (e) {
             $(this).data('DateTimePicker').hide();
         });
     });
     $(function () {
         $('#Recurring_Status').change(function () {
-            if (this.checked)
-            {
+            if (this.checked) {
                 $('#showHideIntervalNum').show();
                 $('#showHideIntervalType').show();
             }
