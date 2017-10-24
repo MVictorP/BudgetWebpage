@@ -65,10 +65,10 @@ namespace BudgetWebpage.Views
                             goal.Interval_Period_End_Date = thisDate;
                         }
                         decimal accountTotalAtThisDate = db.Transactions.Where(t => t.Account_Number == goal.Account_Number && t.Processing_Date <= thisDate).Sum(item => item.Amount);
-                        decimal goalMet = accountTotalAtThisDate - goal.Target_Amount;
+                        decimal savedTowardsGoalAmt = accountTotalAtThisDate - goal.Target_Amount;
 
                         DateTime prevDate = thisDate.AddDays(intervalAmount * -7);
-                        if (goalMet <= 0)
+                        if (savedTowardsGoalAmt <= 0)
                         {
                             goal.Goal_Achieved = "Failed Previous";
                         }
@@ -141,7 +141,28 @@ namespace BudgetWebpage.Views
 
         public ActionResult Dashboard()
         {
-            return View();
+            var accounts = db.Accounts.Where(g => g.Customer_ID == activeCustomer);
+            List<string> accountNames = new List<string>();
+            List<string> accountTotals = new List<string>();
+            try
+            {
+                foreach (var account in accounts)
+                {
+                    account.Account_Total = db.Transactions.Where(t => t.Account_Number == account.Account_Number && t.Processing_Date <= testDate).Sum(item => item.Amount);
+                    accountTotals.Add(account.Account_Total.ToString());
+                    accountNames.Add("'" + account.Account_Type + "'"); //the labels in the chart can't be read without quotes
+                }
+                string AccountNamesList = string.Join(",", accountNames);
+                string AccountTotalsList = string.Join(",", accountTotals);
+
+                ViewBag.AccountNames_List = AccountNamesList;
+                ViewBag.AccountTotals_List = AccountTotalsList;
+                return View();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         // GET: Goals/Details/5
