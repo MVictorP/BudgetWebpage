@@ -73,6 +73,7 @@ namespace BudgetWebpage.Models
         [Required(ErrorMessage = "Please select an account.")]
         public string Account_Number { get; set; }
 
+        //TODO only allow Letters
         [Required(ErrorMessage = "Please enter a name.")]
         public string Name { get; set; }
 

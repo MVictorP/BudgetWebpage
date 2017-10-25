@@ -11,42 +11,78 @@
 </head>
 <h2>Dashboard</h2>
 <script>
-    var barChartData =
-        {
-            labels: [@Html.Raw(ViewBag.AccountNames_List)], //located: GoalsController line 142
+    $(document).ready(function () {
+        var barChartData = {
+            labels: [@Html.Raw(ViewBag.AccountNames_List)],
             datasets: [{
                 label: 'Account Totals',
                 backgroundColor: [
-                    "#f990a7",
-                    "#aad2ed",
-                    "#9966FF",
+                    "#4169E1",
+                    "#20B2AA",
+                    "#FF8C00",
                 ],
                 borderWidth: 2,
                 data: [@ViewBag.AccountTotals_List]
             }]
         };
-    window.onload = function () {
         var ctx = document.getElementById("barcanvas").getContext("2d");
-        window.myBar = new Chart(ctx,
+        var myBar = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: barChartData,
+            options:
             {
-                type: 'bar',
-                data: barChartData,
-                options:
+                title:
                 {
-                    title:
-                    {
-                        display: true,
-                        text: "Account Totals"
-                    },
-                    responsive: true,
-                    maintainAspectRatio: true
+                    display: true,
+                    text: "Account Totals"
+                },
+                responsive: true,
+                maintainAspectRatio: true,
+                callbacks: {
+                    label: function (tooltipItems, data) {
+                        return '$' + tooltipItems.yLabel;
+                    }
                 }
-            });
-    }
+            },
+        })
+    });
 </script>
-
+<script>
+    $(document).ready(function () {
+        var barChartData = {
+            labels: [@Html.Raw(ViewBag.GoalNames_List)],
+            datasets: [{
+                label: 'Amount Left',
+                borderWidth: 2,
+                data: [@ViewBag.GoalAmtLeft_List]
+            }]
+        };
+        var ctx = document.getElementById("barcanvas1").getContext("2d");
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options:
+            {
+                title:
+                {
+                    display: true,
+                    text: "Amount Left"
+                },
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        })
+    });
+</script>
 <body>
-    <div style="text-align: center">
-        <canvas id="barcanvas"></canvas>
+    <div style="width: 100%; overflow:auto;">
+        <div style="float: left; width: 75%;">
+            <canvas id="barcanvas"></canvas>
+        </div>
+    </div>
+    <div style="width: 100%; overflow:auto;">
+        <div style="float: left; width: 75%;">
+            <canvas id="barcanvas1"></canvas>
+        </div>
     </div>
 </body>
