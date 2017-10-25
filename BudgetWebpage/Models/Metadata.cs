@@ -73,13 +73,15 @@ namespace BudgetWebpage.Models
         [Required(ErrorMessage = "Please select an account.")]
         public string Account_Number { get; set; }
 
-        //TODO only allow Letters
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only letters are allowed.")]
         [Required(ErrorMessage = "Please enter a name.")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Please enter a name.")]
         public string Description { get; set; }
 
+        [RegularExpression(@"^\d+.?\d{0,2}$", ErrorMessage = "Only two decimal places are allowed.")]
+        [Range(0, 9999999999999999.99, ErrorMessage = "Out of range.")]
         [Required(ErrorMessage = "Please enter an amount.")]
         [Display(Name = "Goal Amount")]
         public decimal Target_Amount { get; set; }
